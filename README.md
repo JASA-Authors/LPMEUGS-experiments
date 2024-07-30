@@ -8,4 +8,5 @@ Code to reproduce simulation results, figures, and real data analysis results fr
 
 It requires R version 4.4.1 and the following packages:
 
-1. ```r  MASS 7.3.61```
+1. ```MASS 7.3.61```
+2. ```pdfCluster 1.04```
