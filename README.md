@@ -19,4 +19,7 @@ The codes in this file requires R version 4.4.1 and the following packages:
 9. ```foreach 1.5.2```
 10. ```doParallel 1.0.17```
 
-Besides, these codes use parallel computing in order to reduce simulation time and require at least 24 cores.
+Besides, these codes use parallel computing in order to reduce simulation time and require at least 24 cores. 
+
+Table1.R will generate the result for the Table 1.
+
