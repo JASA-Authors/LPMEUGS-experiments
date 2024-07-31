@@ -43,4 +43,4 @@ This file contains dataset for the real data analysis. They are public data from
 
 The code to run the real data analysis for Figure 1-2 and Table 8. 
 1. plots.R is to generate plots.
-2. real_data.R is to generate Table 8.
+2. real_data.R is to generate Table 8. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
