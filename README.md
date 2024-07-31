@@ -22,7 +22,12 @@ The codes in this file requires R version 4.4.1 and the following packages:
 Besides, these codes use parallel computing in order to reduce simulation time and require at least 24 cores and 500GB of storage. The following is the guidance for each document.
 
 1. Table1.R will generate the result for the Table 1.
-2. Table2.R will 
+2. Table2.R will generate the result for the Table 2. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+3. Model 1.R will generate the result for the Table 3. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+4. Model 2.R will generate the result for the Table 4. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+5. Model 3.R will generate the result for the Table 5. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+6. Model 4.R will generate the result for the Table 6. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+7. Model 5.R will generate the result for the Table 7. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 
 ### figures  
 
