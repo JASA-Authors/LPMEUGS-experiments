@@ -44,6 +44,11 @@ This file contains dataset for the real data analysis. They are public data from
 2. data_breast.csv is the dataset.
 3. old.zip is the original format of the above two documents.
 
+### simulation-results  
+
+Contains the results from running the code in the simulation-code folder as described above. 
+
+
 ### real-data-code  
 
 The code to run the real data analysis for Figure 1-2 and Table 8. 
