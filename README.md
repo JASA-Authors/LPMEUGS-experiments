@@ -37,4 +37,10 @@ This file contains dataset for the real data analysis. They are public data from
 
 1. label.csv is the true label.
 2. data_breast.csv is the dataset.
-3. old.zip is the original format of the above two documents. 
+3. old.zip is the original format of the above two documents.
+
+### real-data-code  
+
+The code to run the real data analysis for Figure 1-2 and Table 8. 
+1. plots.R is to generate plots.
+2. real_data.R is to generate Table 8.
