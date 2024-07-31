@@ -22,7 +22,7 @@ The codes in this file requires R version 4.4.1 and the following packages:
 Besides, these codes use parallel computing in order to reduce simulation time and require at least 24 cores and 500GB of storage. The following is the guidance for each document.
 
 1. Table1.R will generate the result for the Table 1.
-2. 
+2. Table2.R will 
 
 ### figures  
 
