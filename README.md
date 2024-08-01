@@ -23,8 +23,11 @@ The codes in this repository requires R version 4.4.1 and the following R packag
 ## Organization
 
 ? give sample scripts of how to run each file
+
 ? Explain key functions
+
 ? Make the two key functions (group detection and precision matrix estimation) as seperate utility files
+
 ? Allow user to set the number of replications
 
 ### simulation-demo (add?) 
