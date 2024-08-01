@@ -22,6 +22,11 @@ The codes in this repository requires R version 4.4.1 and the following R packag
 
 ## Organization
 
+? give sample scripts of how to run each file
+? Explain key functions
+? Make the two key functions (group detection and precision matrix estimation) as seperate utility files
+? Allow user to set the number of replications
+
 ### simulation-demo (add?) 
 
 This folder contains the demo codes to run the simulation examples introduced in Section 4 and Appendix B in the paper. The demo codes will run every model and setting for one replication for illustration purpose. The expected running time on a regular desktop PC should be within XX hours. 
@@ -37,6 +42,8 @@ This folder contains the codes to reproduce the full simulation results presente
 5. Model 3.R will generate the result for the Table 5. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 6. Model 4.R will generate the result for the Table 6. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 7. Model 5.R will generate the result for the Table 7. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+
+
 
 ### simulation-results  
 
