@@ -6,7 +6,7 @@ This GitHub repository contains codes and data to reproduce simulation results, 
 
 ## Package Environments
 
-The codes in this repository requires R version 4.4.1 and the following R packages:
+The codes in this repository requires R version 4.3.1 and the following R packages:
 
 1. ```MASS 7.3.61```
 2. ```pdfCluster 1.04```
