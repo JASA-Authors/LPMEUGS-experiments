@@ -22,7 +22,7 @@ The codes in this repository requires R version 4.3.1 and the following R packag
 
 ### simulation-demo (add?) 
 
-This folder contains the demo codes to run the simulation examples introduced in Section 4 and Appendix B in the paper. The demo codes will run every model and setting for one replication for illustration purpose. The expected running time on a regular desktop PC should be within XX hours. 
+This folder contains the demo codes to run the simulation examples introduced in Section 4 and Appendix B in the paper. The demo codes will run every model and setting for one replication for illustration purpose. The expected running time for each document on a regular desktop PC should be within 5 minutes. 
 
 ### simulation-full  
 
