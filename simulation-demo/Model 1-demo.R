@@ -11,16 +11,17 @@ set.seed(1234)
 ### Function ###
 ################
 PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
+  # OUR method
   # input:
   # X: data
-  # K: number of groups (must be 4)
+  # K: number of groups
   # theta: judge when to stop
   # lambda1: parameter for adapted huber regression
   # lambda2: parameter for glasso regression
   
   # output:
   # Omega: estimated inversed covariance matrix
-  # groupinf: estimated group information
+  # error: estimation error
   
   n=nrow(X)
   p=ncol(X)
@@ -166,6 +167,8 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
 }
 
 BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
+  # ORACLE method
+  # when K=P, it becomes NO-GROUP method 
   n=nrow(X)
   p=ncol(X)
   numblock=K
