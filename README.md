@@ -40,7 +40,7 @@ This folder contains the codes to reproduce the full simulation results presente
 
 ### simulation-results  
 
-This folder contains the results from running the code in the simulation-code folder as described above. 
+This folder contains the results from running the code in the simulation-full folder and real-data-code folder. 
 
 
 ### data
