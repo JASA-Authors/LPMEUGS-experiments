@@ -173,6 +173,8 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
 }
 
 BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
+  # ORACLE method
+  # when K=P, it becomes NO-GROUP method 
   n=nrow(X)
   p=ncol(X)
   numblock=K
