@@ -47,10 +47,11 @@ This folder contains the results from running the code in the simulation-code fo
 
 This folder contains the real dataset dataset for the real data analysis. The dataset is publicly avaliable at  https://bioinformatics.mdanderson.org/public-datasets/ . Please download the data file named "MDA133: Clinical Data and dChip MBEI value Files" from this link. We have modified the dataset for data analysis.
 
-1. label.csv is the true label.
-2. data_breast.csv is the dataset.
+1. "label.csv" is the true label.
+2. "data_breast.csv" is the dataset.
 3. old.zip is the original format of the above two documents. In this file, there are two excel documents named "MDA133CompleteInfo20070319.xls" and "MDA133PredictorTrainAndValidation.xls". Here is how we modified these two datasets:
-     1) 
+    *  We used the column "pCR" in "MDA133CompleteInfo20070319.xls" as our label which is the "label.csv".
+    *  We deleted the header and genes name in "MDA133PredictorTrainAndValidation.xls" and built our "data_breast.csv".
 
 
 ### real-data-code  
