@@ -4,6 +4,12 @@ library(glasso)
 library(expm)
 library(flare) # CLIME, TIGER
 library(POET)
+library(foreach)
+library(doParallel)
+
+clnum<-detectCores()-8 # should be 24
+cl <- makeCluster(getOption("cl.cores", clnum))
+registerDoParallel(cl)
 
 set.seed(1234)
 
@@ -281,10 +287,8 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
 ##########################
 n=160
 p=200
-K=4 # number of groups 
+K=4
 sizeblock=p/K # size of blocks
-replication_time=1
-result_error=c()
 
 lambda1=0.01 
 lambda2=0.01 
@@ -292,9 +296,9 @@ theta=0.01 # judge when to stop the loop
 
 # Model 1
 CSblock=matrix(0.9,nrow = sizeblock,ncol = sizeblock)+diag(sizeblock)*0.1
-Sigmatrue=kronecker(diag(K),CSblock) # true covariance matrix
+Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
-for(rep in 1:replication_time){
+compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
@@ -305,13 +309,13 @@ for(rep in 1:replication_time){
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
   
-  result=c(error1,error2,error3,error5,error6,error7,error8)
-  result_error=rbind(result,result_error)
+  result_error=c(error1,error2,error3,error5,error6,error7,error8)
+  result_error
 }
 
-colnames(result_error)=c("OUR","ORACLE","NO-GROUP","G-LASSO",
-                         "TIGER","CLIME","POET")
-print(result_error)
+x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue1, n, p)
+
+write.csv(x,file=paste0("model1_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=120 p=200        ###
@@ -320,9 +324,6 @@ n=120
 p=200
 K=4 # number of groups 
 sizeblock=p/K # size of blocks
-replication_time=1
-result_error=c()
-
 
 lambda1=0.01 
 lambda2=0.01 
@@ -330,9 +331,9 @@ theta=0.01 # judge when to stop the loop
 
 # Model 1
 CSblock=matrix(0.9,nrow = sizeblock,ncol = sizeblock)+diag(sizeblock)*0.1
-Sigmatrue=kronecker(diag(K),CSblock) # true covariance matrix
+Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
-for(rep in 1:replication_time){
+compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
@@ -343,13 +344,13 @@ for(rep in 1:replication_time){
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
   
-  result=c(error1,error2,error3,error5,error6,error7,error8)
-  result_error=rbind(result,result_error)
+  result_error=c(error1,error2,error3,error5,error6,error7,error8)
+  result_error
 }
 
-colnames(result_error)=c("OUR","ORACLE","NO-GROUP","G-LASSO",
-                         "TIGER","CLIME","POET")
-print(result_error)
+x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue1, n, p)
+
+write.csv(x,file=paste0("model1_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=200 p=120        ###
@@ -358,8 +359,6 @@ n=200
 p=120
 K=4 # number of groups 
 sizeblock=p/K # size of blocks
-replication_time=1
-result_error=c()
 
 lambda1=0.01 
 lambda2=0.01 
@@ -367,9 +366,9 @@ theta=0.01 # judge when to stop the loop
 
 # Model 1
 CSblock=matrix(0.9,nrow = sizeblock,ncol = sizeblock)+diag(sizeblock)*0.1
-Sigmatrue=kronecker(diag(K),CSblock) # true covariance matrix
+Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
-for(rep in 1:replication_time){
+compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
@@ -381,13 +380,13 @@ for(rep in 1:replication_time){
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
   
-  result=c(error1,error2,error3,error4,error5,error6,error7,error8)
-  result_error=rbind(result,result_error)
+  result_error=c(error1,error2,error3,error4,error5,error6,error7,error8)
+  result_error
 }
 
-colnames(result_error)=c("OUR","ORACLE","NO-GROUP","SAMPLE","G-LASSO",
-                         "TIGER","CLIME","POET")
-print(result_error)
+x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue1, n, p)
+
+write.csv(x,file=paste0("model1_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=200 p=160        ###
@@ -396,8 +395,6 @@ n=200
 p=160
 K=4 # number of groups 
 sizeblock=p/K # size of blocks
-replication_time=1
-result_error=c()
 
 lambda1=0.01 
 lambda2=0.01 
@@ -405,9 +402,9 @@ theta=0.01 # judge when to stop the loop
 
 # Model 1
 CSblock=matrix(0.9,nrow = sizeblock,ncol = sizeblock)+diag(sizeblock)*0.1
-Sigmatrue=kronecker(diag(K),CSblock) # true covariance matrix
+Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
-for(rep in 1:replication_time){
+compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
@@ -419,13 +416,14 @@ for(rep in 1:replication_time){
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
   
-  result=c(error1,error2,error3,error4,error5,error6,error7,error8)
-  result_error=rbind(result,result_error)
+  result_error=c(error1,error2,error3,error4,error5,error6,error7,error8)
+  result_error
 }
 
-colnames(result_error)=c("OUR","ORACLE","NO-GROUP","SAMPLE","G-LASSO",
-                         "TIGER","CLIME","POET")
-print(result_error)
+x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue1, n, p)
+
+write.csv(x,file=paste0("model1_", n,"_", p, ".csv"),quote=F,row.names = F)
+
 
 ##########################
 ### n=50 p=200        ###
@@ -434,8 +432,6 @@ n=50
 p=200
 K=4 # number of groups 
 sizeblock=p/K # size of blocks
-replication_time=1
-result_error=c()
 
 lambda1=0.01 
 lambda2=0.01 
@@ -443,9 +439,9 @@ theta=0.01 # judge when to stop the loop
 
 # Model 1
 CSblock=matrix(0.9,nrow = sizeblock,ncol = sizeblock)+diag(sizeblock)*0.1
-Sigmatrue=kronecker(diag(K),CSblock) # true covariance matrix
+Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
-for(rep in 1:replication_time){
+compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
@@ -456,10 +452,12 @@ for(rep in 1:replication_time){
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
   
-  result=c(error1,error2,error3,error5,error6,error7,error8)
-  result_error=rbind(result,result_error)
+  result_error=c(error1,error2,error3,error5,error6,error7,error8)
+  result_error
 }
 
-colnames(result_error)=c("OUR","ORACLE","NO-GROUP","G-LASSO",
-                         "TIGER","CLIME","POET")
-print(result_error)
+x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue1, n, p)
+
+write.csv(x,file=paste0("model1_", n,"_", p, ".csv"),quote=F,row.names = F)
+
+stopCluster(cl)
