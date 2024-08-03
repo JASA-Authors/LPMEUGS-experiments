@@ -20,9 +20,9 @@ The codes in this repository requires R version 4.3.1 and the following R packag
 10. ```doParallel 1.0.17```
 
 
-### simulation-demo (add?) 
+### simulation-demo 
 
-This folder contains the demo codes to run the simulation examples introduced in Section 4 and Appendix B in the paper. The demo codes will run every model and setting for one replication for illustration purpose. The expected running time for each document on a regular desktop PC should be within 5 minutes. 
+This folder contains the six demo codes to run the simulation examples introduced in Section 4 and Appendix B in the paper. The demo codes will run every model and setting for one replication (you can also change the replication times by changing the variable ```replication_time```) for illustration purpose. The expected running time for each document on a regular desktop PC should be within 5 minutes. 
 
 ### simulation-full  
 
