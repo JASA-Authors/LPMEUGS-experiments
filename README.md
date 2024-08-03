@@ -35,7 +35,7 @@ This folder contains the codes to reproduce the full simulation results presente
 5. Model 3.R will generate the result for the Table 5. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 6. Model 4.R will generate the result for the Table 6. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 7. Model 5.R will generate the result for the Table 7. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-8. Model 6.R will generate the result for the Table 1 in the Appendix. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+8. Model 6.R will generate the result for the Table 1 in the Appendix B. The codes will generate the error for each method in each time simulation. Remember to use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 
 
 ### simulation-results  
