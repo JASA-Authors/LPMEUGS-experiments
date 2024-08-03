@@ -494,3 +494,5 @@ compare_par=function(i, Sigmatrue, n, p){
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue5, n, p)
 
 write.csv(x,file=paste0("model5_", n,"_", p, ".csv"),quote=F,row.names = F)
+
+stopCluster(cl)
