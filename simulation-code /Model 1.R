@@ -24,30 +24,30 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
   # theta: judge when to stop
   # lambda1: parameter for adapted huber regression
   # lambda2: parameter for glasso regression
-  
+
   # output:
   # Omega: estimated inversed covariance matrix
   # error: estimation error
-  
+
   n=nrow(X)
   p=ncol(X)
-  
+
   # each row of X minuses its mean
   Y=sweep(X,1,rowMeans(X))
-  
+
   # PCA
   eiv=eigen(t(Y)%*%Y/p)$vectors
   V=as.matrix(eiv[,1:(K-1)],ncol=K-1)
-  
+
   # Kmeans
   clusterinf=kmeans(V, K)$cluster
-  
+
   B_count=c()
   for (i in 1:K) {
     B_count=c(B_count,length(which(clusterinf==i)))
   }
   seq1=order(B_count,decreasing = FALSE)
-  
+
   Bcluster=list()
   C=c()
   for (i in seq1) {
@@ -59,29 +59,29 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
   for (i in 2:K) {
     B[, (sum(C[1:(i-1)])+1) : sum(C[1:i])] = X[,Bcluster[[i]]]
   }
-  
+
   inverD=matrix(0,nrow=p,ncol=p)
   A=matrix(0,nrow=p,ncol=p)
-  
+
   # for block 1
   X1=B[,1:C[1]]
   S1=t(X1)%*%(X1)
   S1=S1/n
   inverD1=glasso::glasso(S1,rho = lambda2)$wi
   inverD[1:C[1],1:C[1]]=inverD1
-  
+
   # for other blocks
   for (i in 2:K) {
     numrepeat=1 # number of repeat times
     Zi=B[,1:sum(C[1:(i-1)])]
     Xi=B[,(sum(C[1:(i-1)])+1):(sum(C[1:i]))]
-    
+
     # initial Ai0 (Di0^-1 is indentity matrix)
     wildX=c(Xi%*%diag(C[i]))
     wildX=as.matrix(wildX)
-    
+
     wildZ=as.matrix(kronecker(diag(C[i]),Zi))
-    
+
     if(ncol(wildZ)==1){
       lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
       newAi=t(matrix(lasso.mod,ncol=C[i]))
@@ -89,21 +89,21 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
       lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
       newAi=t(matrix(coef(lasso.mod)[-1],ncol=C[i]))
     }
-    
+
     # initial Di1^-1 by Ai0
     Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
     Si=Si/n
     newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-    
+
     # second time to calculate Ai and Di
     numrepeat=numrepeat+1
     oldAi=newAi
     oldinverDi=newinverDi
     wildX=c(Xi%*%expm::sqrtm(oldinverDi))
     wildX=as.matrix(wildX)
-    
+
     wildZ=as.matrix(kronecker(expm::sqrtm(oldinverDi),Zi))
-    
+
     if(ncol(wildZ)==1){
       lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
       newAi=t(matrix(lasso.mod,ncol=C[i]))
@@ -111,24 +111,24 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
       lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
       newAi=t(matrix(coef(lasso.mod)[-1],ncol=C[i]))
     }
-    
+
     Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
     Si=Si/n
     newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-    
+
     # judge whether converge
     conAi=sqrt(sum((oldAi-newAi)^2))
     coninverDi=sqrt(sum((oldinverDi-newinverDi)^2))
-    
+
     while (numrepeat<100) {
       numrepeat=numrepeat+1
       oldAi=newAi
       oldinverDi=newinverDi
       wildX=c(Xi%*%expm::sqrtm(oldinverDi))
       wildX=as.matrix(wildX)
-      
+
       wildZ=as.matrix(kronecker(expm::sqrtm(oldinverDi),Zi))
-      
+
       if(ncol(wildZ)==1){
         lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
         newAi=t(matrix(lasso.mod,ncol=C[i]))
@@ -136,39 +136,39 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
         lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
         newAi=t(matrix(coef(lasso.mod)[-1],ncol=C[i]))
       }
-      
+
       Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
       Si=Si/n
       newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-      
+
       # judge whether converge
       conAi=sqrt(sum((oldAi-newAi)^2))
       coninverDi=sqrt(sum((oldinverDi-newinverDi)^2))
-      
+
       if(conAi<theta && coninverDi<theta){
         break
       }
-      
+
     }
-    
+
     # insert Ai to A and inverDi to inverD
     A[(sum(C[1:(i-1)])+1):(sum(C[1:i])),1:(sum(C[1:(i-1)]))]=newAi
     inverD[(sum(C[1:(i-1)])+1):(sum(C[1:i])),(sum(C[1:(i-1)])+1):(sum(C[1:i]))]=newinverDi
   }
-  
+
   hatT=diag(p)-A
   newOmega=t(hatT)%*%inverD%*%hatT
-  
+
   Bcluster=c()
   for (i in seq1) {
     Bcluster=c(Bcluster,which(clusterinf==i))
   }
   new_Sigmatrue=Sigmatrue[,Bcluster]
   new_Sigmatrue=new_Sigmatrue[Bcluster,]
-  
+
   error=sqrt(sum((solve(new_Sigmatrue)-newOmega)^2))
-  
-  
+
+
   return(list(Omega=newOmega, error=error))
 }
 
@@ -179,7 +179,7 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
   p=ncol(X)
   numblock=K
   sizeblock=p/numblock
-  
+
   inverD=matrix(0,nrow=p,ncol=p)
   A=matrix(0,nrow=p,ncol=p)
   # for block 1
@@ -188,20 +188,20 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
   S1=S1/n
   inverD1=glasso::glasso(S1,rho = lambda2)$wi
   inverD[1:sizeblock,1:sizeblock]=inverD1
-  
-  
+
+
   # for other blocks
   for (i in 2:numblock) {
     numrepeat=1 # number of repeat times
     Zi=X[,1:((i-1)*sizeblock)]
     Xi=X[,((i-1)*sizeblock+1):(i*sizeblock)]
-    
+
     # initial Ai0 (Di0^-1 is indentity matrix)
     wildX=c(Xi%*%diag(sizeblock))
     wildX=as.vector(wildX)
-    
+
     wildZ=kronecker(diag(sizeblock),Zi)
-    
+
     if(ncol(wildZ)==1){
       lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
       newAi=t(matrix(lasso.mod,ncol=sizeblock))
@@ -209,21 +209,21 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
       lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
       newAi=t(matrix(coef(lasso.mod)[-1],ncol=sizeblock))
     }
-    
+
     # initial Di1^-1 by Ai0
     Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
     Si=Si/n
     newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-    
+
     # second time to calculate Ai and Di
     numrepeat=numrepeat+1
     oldAi=newAi
     oldinverDi=newinverDi
     wildX=c(Xi%*%expm::sqrtm(oldinverDi))
     wildX=as.vector(wildX)
-    
+
     wildZ=kronecker(expm::sqrtm(oldinverDi),Zi)
-    
+
     if(ncol(wildZ)==1){
       lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
       newAi=t(matrix(lasso.mod,ncol=sizeblock))
@@ -231,28 +231,28 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
       lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
       newAi=t(matrix(coef(lasso.mod)[-1],ncol=sizeblock))
     }
-    
+
     Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
     Si=Si/n
     newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-    
+
     # judge whether converge
     conAi=sqrt(sum((oldAi-newAi)^2))
     coninverDi=sqrt(sum((oldinverDi-newinverDi)^2))
-    
+
     while (numrepeat<100) {
       if(conAi<theta && coninverDi<theta){
         break
       }
-      
+
       numrepeat=numrepeat+1
       oldAi=newAi
       oldinverDi=newinverDi
       wildX=c(Xi%*%expm::sqrtm(oldinverDi))
       wildX=as.vector(wildX)
-      
+
       wildZ=kronecker(expm::sqrtm(oldinverDi),Zi)
-      
+
       if(ncol(wildZ)==1){
         lasso.mod=lm( wildX ~ 0+ wildZ)$coefficients
         newAi=t(matrix(lasso.mod,ncol=sizeblock))
@@ -260,25 +260,25 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
         lasso.mod=glmnet::glmnet (wildZ, wildX, alpha=1, lambda=lambda1,intercept=FALSE)
         newAi=t(matrix(coef(lasso.mod)[-1],ncol=sizeblock))
       }
-      
+
       Si=t(Xi-Zi%*%t(newAi))%*%(Xi-Zi%*%t(newAi))
       Si=Si/n
       newinverDi=glasso::glasso(Si,rho = lambda2)$wi
-      
+
       conAi=sqrt(sum((oldAi-newAi)^2))
       coninverDi=sqrt(sum((oldinverDi-newinverDi)^2))
-      
+
     }
-    
+
     # insert Ai to A and inverDi to inverD
     A[((i-1)*sizeblock+1):(i*sizeblock),1:((i-1)*sizeblock)]=newAi
     inverD[((i-1)*sizeblock+1):(i*sizeblock),((i-1)*sizeblock+1):(i*sizeblock)]=newinverDi
   }
-  
+
   hatT=diag(p)-A
   newOmega=t(hatT)%*%inverD%*%hatT
   serror=sqrt(sum((solve(Sigmatrue)-newOmega)^2))
-  
+
   return(list(Omega=newOmega,error=serror))
 }
 
@@ -287,7 +287,7 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
 ##########################
 n=160
 p=200
-K=4
+K=4 # number of groups 
 sizeblock=p/K # size of blocks
 
 lambda1=0.01 
@@ -300,7 +300,7 @@ Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
 compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
-  
+
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error2=BCDnormal(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
@@ -308,7 +308,7 @@ compare_par=function(i, Sigmatrue, n, p){
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
-  
+
   result_error=c(error1,error2,error3,error5,error6,error7,error8)
   result_error
 }
@@ -335,7 +335,7 @@ Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
 compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
-  
+
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error2=BCDnormal(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
@@ -343,7 +343,7 @@ compare_par=function(i, Sigmatrue, n, p){
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
-  
+
   result_error=c(error1,error2,error3,error5,error6,error7,error8)
   result_error
 }
@@ -370,7 +370,7 @@ Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
 compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
-  
+
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error2=BCDnormal(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
@@ -379,7 +379,7 @@ compare_par=function(i, Sigmatrue, n, p){
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
-  
+
   result_error=c(error1,error2,error3,error4,error5,error6,error7,error8)
   result_error
 }
@@ -406,7 +406,7 @@ Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
 compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
-  
+
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error2=BCDnormal(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
@@ -415,7 +415,7 @@ compare_par=function(i, Sigmatrue, n, p){
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
-  
+
   result_error=c(error1,error2,error3,error4,error5,error6,error7,error8)
   result_error
 }
@@ -443,7 +443,7 @@ Sigmatrue1=kronecker(diag(K),CSblock) # true covariance matrix
 
 compare_par=function(i, Sigmatrue, n, p){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
-  
+
   error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error2=BCDnormal(X,K,lambda1,lambda2,theta, Sigmatrue)$error
   error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
@@ -451,7 +451,7 @@ compare_par=function(i, Sigmatrue, n, p){
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
   error8=sqrt(sum((solve(Sigmatrue)-solve(POET::POET(t(X))$SigmaY))^2))
-  
+
   result_error=c(error1,error2,error3,error5,error6,error7,error8)
   result_error
 }
