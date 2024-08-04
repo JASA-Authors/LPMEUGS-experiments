@@ -623,7 +623,7 @@ compare_par=function(i, Sigmatrue, n, p){
 
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue4, n, p)
 
-write.csv(x,file=paste0("model4_", n,"_", p, ".csv"),quote=F,row.names = F)
+write.csv(x,file=paste0("table2_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=120 p=200        ###
@@ -660,7 +660,7 @@ compare_par=function(i, Sigmatrue, n, p){
 
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue4, n, p)
 
-write.csv(x,file=paste0("model4_", n,"_", p, ".csv"),quote=F,row.names = F)
+write.csv(x,file=paste0("table2_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=200 p=120        ###
@@ -697,7 +697,7 @@ compare_par=function(i, Sigmatrue, n, p){
 
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue4, n, p)
 
-write.csv(x,file=paste0("model4_", n,"_", p, ".csv"),quote=F,row.names = F)
+write.csv(x,file=paste0("table2_", n,"_", p, ".csv"),quote=F,row.names = F)
 
 ##########################
 ### n=200 p=160        ###
@@ -734,5 +734,5 @@ compare_par=function(i, Sigmatrue, n, p){
 
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue4, n, p)
 
-write.csv(x,file=paste0("model4_", n,"_", p, ".csv"),quote=F,row.names = F)
+write.csv(x,file=paste0("table2_", n,"_", p, ".csv"),quote=F,row.names = F)
 
