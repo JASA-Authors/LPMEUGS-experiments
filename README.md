@@ -62,7 +62,7 @@ This folder contains the real dataset dataset for the real data analysis. The da
 
 This folder contrains the codes to reproduce the real data analysis results presented in Section 5 in the paper. 
 1. plots.R will generate two plots. 1.png is Figure 1 in the paper. 2.png is Figure 2 in the paper.
-2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std (include it inthe code?).
+2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate mean and std.
 
 ### figures  
 
