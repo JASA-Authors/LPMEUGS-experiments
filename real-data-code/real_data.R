@@ -366,6 +366,6 @@ MDDA=function(x1){
 
 
 result1=foreach(i=1:100,.combine='rbind') %dopar% MDDA(i)
-write.csv(result1,"result2.csv")
+write.csv(result1,"real_data_result.csv")
 
 stopCluster(cl)
