@@ -1,23 +1,25 @@
 set.seed(1234)
 
-PCAkmeans=function(X, K, lambda1, lambda2, theta){
+################
+### Function ###
+################
+Group_Detect=function(X, K, lambda1, lambda2, theta){
   # OUR method
-  # this function is slightly different with Model 1.R and we add another output for the order information and delete the input of real covariance matrix
   # input:
   # X: data
-  # K: number of groups 
-  # theta: judge when to stop
-  # lambda1: parameter for adapted huber regression
+  # K: number of groups
+  # theta: threshold for stop
+  # lambda1: parameter for glmnet
   # lambda2: parameter for glasso regression
   
   # output:
-  # Omega: estimated inversed covariance matrix
+  # Omega: estimated precision matrix
   # order1: estimated group information
   
   n=nrow(X)
   p=ncol(X)
   
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -27,12 +29,14 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta){
   # Kmeans
   clusterinf=kmeans(V, K)$cluster
   
+  # detect orders based on cluster size
   B_count=c()
   for (i in 1:K) {
     B_count=c(B_count,length(which(clusterinf==i)))
   }
   seq1=order(B_count,decreasing = FALSE)
   
+  # reorder sample X
   Bcluster=list()
   C=c()
   for (i in seq1) {
@@ -144,11 +148,23 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta){
   hatT=diag(p)-A
   newOmega=t(hatT)%*%inverD%*%hatT
   
+  
   return(list(Omega=newOmega,order1=Bcluster))
 }
 
-BCDnormal=function(X,K,lambda1,lambda2,theta){
-  # K=p is NO-GROUP method
+Group_Precision=function(X,K,lambda1,lambda2,theta){
+  # ORACLE method
+  # when K=P, it becomes NO-GROUP method 
+  # input:
+  # X: data
+  # K: number of groups
+  # theta: judge when to stop
+  # lambda1: parameter for glmnet
+  # lambda2: parameter for glasso regression
+  
+  # output:
+  # Omega: estimated precision matrix
+  
   n=nrow(X)
   p=ncol(X)
   numblock=K
@@ -255,6 +271,9 @@ BCDnormal=function(X,K,lambda1,lambda2,theta){
   return(list(Omega=newOmega))
 }
 
+############
+### Data ###
+############
 data_breast=read.csv("D:/data_breast.csv",header = T)
 data_label=read.csv("D:/label.csv",header = T)
 data_label_RD=which(data_label$pCR==0)
@@ -275,7 +294,9 @@ pCR_train_data=data_breast_pCR[,-pCR_test_index]
 
 true_lable=c(rep(0,8),rep(1,25))
 
-
+####################
+### Select Genes ###
+####################
 p_value_seq=numeric(p)
 for (i in 1:p) {
   p_value_seq[i]=t.test(RD_train_data[i,], pCR_train_data[i,], var.equal=TRUE)$p.value
@@ -292,6 +313,9 @@ for (i in 1:ncol(train_data)) {
 
 X=t(train_data)
 
+#############
+### Plots ###
+#############
 ## Screen Plot and Projection
 library(ggplot2)
 library(patchwork)
@@ -318,7 +342,7 @@ p1+p2
 
 ## Heat Map
 library(reshape2)
-a1=PCAkmeans(X,2,0.01,0.01,0.01)
+a1=Group_Detect(X,2,0.01,0.01,0.01)
 Omegahat=a1$Omega 
 order1=unlist(a1$order1)
 label=colnames(X)
@@ -392,7 +416,7 @@ g4=ggplot(data4)+ aes(X, Y, fill= Z) +
         axis.text.y=element_blank(), axis.ticks.y=element_blank())+
   theme(legend.title=element_blank())
 
-Omegahat5=BCDnormal(X,ncol(X),0.01,0.01,0.1)$Omega
+Omegahat5=Group_Precision(X,ncol(X),0.01,0.01,0.1)$Omega
 Omegahat5=Omegahat5[order1,]
 Omegahat5=Omegahat5[,order1]
 data5=expand.grid(X=label, Y=label)
