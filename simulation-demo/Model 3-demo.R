@@ -5,27 +5,28 @@ library(expm)
 library(flare) # CLIME, TIGER
 library(POET)
 
+set.seed(1234)
 
 ################
 ### Function ###
 ################
-PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
+Group_Detect=function(X, K, lambda1, lambda2, theta, Sigmatrue){
   # OUR method
   # input:
   # X: data
   # K: number of groups
-  # theta: judge when to stop
-  # lambda1: parameter for adapted huber regression
+  # theta: threshold for stop
+  # lambda1: parameter for glmnet
   # lambda2: parameter for glasso regression
   
   # output:
-  # Omega: estimated inversed covariance matrix
+  # Omega: estimated precision matrix
   # error: estimation error
   
   n=nrow(X)
   p=ncol(X)
   
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -35,12 +36,14 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
   # Kmeans
   clusterinf=kmeans(V, K)$cluster
   
+  # detect orders based on cluster size
   B_count=c()
   for (i in 1:K) {
     B_count=c(B_count,length(which(clusterinf==i)))
   }
   seq1=order(B_count,decreasing = FALSE)
   
+  # reorder sample X
   Bcluster=list()
   C=c()
   for (i in seq1) {
@@ -165,9 +168,20 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta, Sigmatrue){
   return(list(Omega=newOmega, error=error))
 }
 
-BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
-  # let K=p it is NO-GOURP method
-  # we do not use it as ORACLE method
+Group_Precision=function(X,K,lambda1,lambda2,theta, Sigmatrue){
+  # In model 3, we do not use it as ORACLE method
+  # Let K=P, it becomes NO-GROUP method 
+  # input:
+  # X: data
+  # K: number of groups
+  # theta: judge when to stop
+  # lambda1: parameter for glmnet
+  # lambda2: parameter for glasso regression
+  
+  # output:
+  # Omega: estimated precision matrix
+  # error: estimation error
+  
   n=nrow(X)
   p=ncol(X)
   numblock=K
@@ -275,32 +289,23 @@ BCDnormal=function(X,K,lambda1,lambda2,theta, Sigmatrue){
   return(list(Omega=newOmega,error=serror))
 }
 
-BCD=function(X, K, clusterinf=NA, method="PCA", lambda1, lambda2, theta, Sigmatrue){
-  # ORACLE method
-  # clusterinf is the true clustering result
+Group_Precision2=function(X, K, clusterinf, lambda1, lambda2, theta, Sigmatrue){
+  # In model 3, we use it as ORACLE method
+  # input:
+  # X: data
+  # K: number of groups
+  # theta: judge when to stop
+  # lambda1: parameter for glmnet
+  # lambda2: parameter for glasso regression
+  # clusterinf: the true clustering result
+  
+  # output:
+  # Omega: estimated precision matrix
+  # error: estimation error
+
   n=nrow(X)
   p=ncol(X)
   sizeblock=p/K
-  
-  if(sum(is.na(clusterinf))>0){
-    clusterinf=c()
-    if(method=="PCA"){
-      # each row of X minuses its mean
-      Y=sweep(X,1,rowMeans(X))
-      
-      # PCA
-      eiv=eigen(t(Y)%*%Y/p)$vectors
-      V=as.matrix(eiv[,1:(K-1)],ncol=K-1)
-      
-      # Kmeans
-      clusterinf=kmeans(V, K)$cluster
-    }
-    else{
-      for (i in 1:K) {
-        clusterinf=c(clusterinf,rep(i,sizeblock))
-      }
-    }
-  }
   
   Bcluster=list()
   C=c()
@@ -457,9 +462,9 @@ clusterinf=truelable[a_new]
 for(rep in 1:replication_time){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
-  error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
-  error2=BCD(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
-  error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
+  error1=Group_Detect(X,K,lambda1,lambda2,theta, Sigmatrue)$error
+  error2=Group_Precision2(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
+  error3=Group_Precision(X,p,lambda1,lambda2,theta, Sigmatrue)$error
   error5=sqrt(sum((solve(Sigmatrue)-glasso::glasso(cov(X), rho=.1)$wi)^2))
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
@@ -504,9 +509,9 @@ clusterinf=truelable[a_new]
 for(rep in 1:replication_time){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
-  error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
-  error2=BCD(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
-  error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
+  error1=Group_Detect(X,K,lambda1,lambda2,theta, Sigmatrue)$error
+  error2=Group_Precision2(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
+  error3=Group_Precision(X,p,lambda1,lambda2,theta, Sigmatrue)$error
   error5=sqrt(sum((solve(Sigmatrue)-glasso::glasso(cov(X), rho=.1)$wi)^2))
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
@@ -551,9 +556,9 @@ clusterinf=truelable[a_new]
 for(rep in 1:replication_time){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
-  error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
-  error2=BCD(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
-  error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
+  error1=Group_Detect(X,K,lambda1,lambda2,theta, Sigmatrue)$error
+  error2=Group_Precision2(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
+  error3=Group_Precision(X,p,lambda1,lambda2,theta, Sigmatrue)$error
   error4=sqrt(sum((solve(Sigmatrue)-solve(cov(X)))^2))
   error5=sqrt(sum((solve(Sigmatrue)-glasso::glasso(cov(X), rho=.1)$wi)^2))
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
@@ -599,9 +604,9 @@ clusterinf=truelable[a_new]
 for(rep in 1:replication_time){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
-  error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
-  error2=BCD(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
-  error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
+  error1=Group_Detect(X,K,lambda1,lambda2,theta, Sigmatrue)$error
+  error2=Group_Precision2(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
+  error3=Group_Precision(X,p,lambda1,lambda2,theta, Sigmatrue)$error
   error4=sqrt(sum((solve(Sigmatrue)-solve(cov(X)))^2))
   error5=sqrt(sum((solve(Sigmatrue)-glasso::glasso(cov(X), rho=.1)$wi)^2))
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
@@ -647,9 +652,9 @@ clusterinf=truelable[a_new]
 for(rep in 1:replication_time){
   X=as.matrix(MASS::mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue))
   
-  error1=PCAkmeans(X,K,lambda1,lambda2,theta, Sigmatrue)$error
-  error2=BCD(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
-  error3=BCDnormal(X,p,lambda1,lambda2,theta, Sigmatrue)$error
+  error1=Group_Detect(X,K,lambda1,lambda2,theta, Sigmatrue)$error
+  error2=Group_Precision2(X,K,clusterinf=clusterinf, lambda1=lambda1,lambda2=lambda2,theta=theta, Sigmatrue=Sigmatrue)$error
+  error3=Group_Precision(X,p,lambda1,lambda2,theta, Sigmatrue)$error
   error5=sqrt(sum((solve(Sigmatrue)-glasso::glasso(cov(X), rho=.1)$wi)^2))
   error6=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "tiger")$icov[[1]])^2))
   error7=sqrt(sum((solve(Sigmatrue)-flare::sugm(X,nlambda=1,method = "clime")$icov[[1]])^2))
