@@ -38,7 +38,7 @@ This folder contains the codes to reproduce the full simulation results presente
 8. Model 6.R will generate the result for the Table 1 in the Appendix B. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
 
 
-### simulation-results  
+### results  
 
 This folder contains the results from running the code in the simulation-full folder and real-data-code folder. 
 
