@@ -27,7 +27,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -65,7 +65,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -103,7 +103,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -141,7 +141,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -179,7 +179,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -217,7 +217,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue1))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -261,7 +261,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -301,7 +301,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -341,7 +341,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -381,7 +381,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -421,7 +421,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -461,7 +461,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue2))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -506,7 +506,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -548,7 +548,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -590,7 +590,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -632,7 +632,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -674,7 +674,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -716,7 +716,7 @@ for (i in 1:repli) {
   truelable=truelable[a_new]
   
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue3))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -757,7 +757,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -795,7 +795,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -833,7 +833,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -871,7 +871,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -910,7 +910,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -948,7 +948,7 @@ error2=c()
 
 for (i in 1:repli) {
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue4))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -995,7 +995,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -1039,7 +1039,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -1083,7 +1083,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -1127,7 +1127,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -1171,7 +1171,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -1215,7 +1215,7 @@ for (i in 1:repli) {
     }
   }
   X=as.matrix(mvrnorm(n=n,mu=rep(0,p),Sigma = Sigmatrue5))
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
