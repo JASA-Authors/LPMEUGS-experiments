@@ -9,26 +9,26 @@ clnum<-24
 cl <- makeCluster(getOption("cl.cores", clnum))
 registerDoParallel(cl)
 
-set.seed(1234)
-
-PCAkmeans=function(X, K, lambda1, lambda2, theta){
+################
+### Function ###
+################
+Group_Detect=function(X, K, lambda1, lambda2, theta){
   # OUR method
-  # This function is slight different with Model 1.R and add cluster information and delete the input of true covariance matrix
   # input:
   # X: data
-  # K: number of groups (must be 4)
-  # theta: judge when to stop
-  # lambda1: parameter for adapted huber regression
+  # K: number of groups
+  # theta: threshold for stop
+  # lambda1: parameter for glmnet
   # lambda2: parameter for glasso regression
   
   # output:
-  # Omega: estimated inversed covariance matrix
+  # Omega: estimated precision matrix
   # orderB: estimated cluster information
   
   n=nrow(X)
   p=ncol(X)
   
-  # each row of X minuses its mean
+  # centralize each row
   Y=sweep(X,1,rowMeans(X))
   
   # PCA
@@ -38,12 +38,14 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta){
   # Kmeans
   clusterinf=kmeans(V, K)$cluster
   
+  # detect orders based on cluster size
   B_count=c()
   for (i in 1:K) {
     B_count=c(B_count,length(which(clusterinf==i)))
   }
   seq1=order(B_count,decreasing = FALSE)
   
+  # reorder sample X
   Bcluster=list()
   C=c()
   for (i in seq1) {
@@ -155,11 +157,22 @@ PCAkmeans=function(X, K, lambda1, lambda2, theta){
   hatT=diag(p)-A
   newOmega=t(hatT)%*%inverD%*%hatT
   
+  
   return(list(Omega=newOmega,orderB=Bcluster))
 }
 
-BCDnormal=function(X,K,lambda1,lambda2,theta){
-  # K=p is NO-GROUP method 
+Group_Precision=function(X,K,lambda1,lambda2,theta){
+  # when K=P, it becomes NO-GROUP method 
+  # input:
+  # X: data
+  # K: number of groups
+  # theta: judge when to stop
+  # lambda1: parameter for glmnet
+  # lambda2: parameter for glasso regression
+  
+  # output:
+  # Omega: estimated precision matrix
+  
   n=nrow(X)
   p=ncol(X)
   numblock=K
@@ -267,7 +280,10 @@ BCDnormal=function(X,K,lambda1,lambda2,theta){
 }
 
 judge_label=function(mu0,mu1,pi0,pi1,test_data,Omega,true_lable){
-  # this function is calculate Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC)
+  # this function is to calculate LDA and then Specificity, 
+  # Sensitivity, and Matthews Correlation Coefficien (MCC) 
+  
+  ### LDA
   value0=t(test_data)%*%Omega%*%mu0
   value0=value0-matrix(rep(t(mu0)%*%Omega%*%mu0/2+log(pi0),33),ncol=1)
   value1=t(test_data)%*%Omega%*%mu1
@@ -275,6 +291,7 @@ judge_label=function(mu0,mu1,pi0,pi1,test_data,Omega,true_lable){
   final=cbind(value0,value1)
   label_pred=apply(final,1,which.max)-1
   
+  ### Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) 
   precision_table=table(label_pred,true_lable)
   Specificity=precision_table[1,1]/(precision_table[1,1]+precision_table[2,1])
   Sensitivity=precision_table[2,2]/(precision_table[2,2]+precision_table[1,2])
@@ -286,6 +303,9 @@ judge_label=function(mu0,mu1,pi0,pi1,test_data,Omega,true_lable){
   return(c(Specificity,Sensitivity,MCC))
 }
 
+############
+### Data ###
+############
 data_breast=read.csv("data_breast.csv",header = T)
 data_label=read.csv("label.csv",header = T)
 data_label_RD=which(data_label$pCR==0)
@@ -299,6 +319,9 @@ n_pCR=length(data_label_pCR)
 p=nrow(data_breast)
 
 MDDA=function(x1){
+  
+  set.seed(x1)
+  
   RD_test_index=sample(1:n_RD,size = 25,replace = FALSE)
   pCR_test_index=sample(1:n_pCR,size = 8,replace = FALSE)
   RD_train_data=data_breast_RD[,-RD_test_index]
@@ -306,7 +329,9 @@ MDDA=function(x1){
   
   true_lable=c(rep(0,25),rep(1,8))
   
-  
+  ####################
+  ### Select Genes ###
+  ####################
   p_value_seq=numeric(p)
   for (i in 1:p) {
     p_value_seq[i]=t.test(RD_train_data[i,], pCR_train_data[i,], var.equal=TRUE)$p.value
@@ -328,18 +353,21 @@ MDDA=function(x1){
     test_data[,i]=test_data[,i]/sd_train
   }
   
+  ######################
+  ### LDA parameters ###
+  ######################
   pi0=ncol(RD_train_data)/(ncol(RD_train_data)+ncol(pCR_train_data))
   pi1=ncol(pCR_train_data)/(ncol(RD_train_data)+ncol(pCR_train_data))
   mu0=matrix(rowMeans(train_data[,1:ncol(RD_train_data)]),ncol=1)
   mu1=matrix(rowMeans(train_data[,(ncol(RD_train_data)+1):ncol(train_data)]),ncol=1)
   
-  est1=PCAkmeans(X,2,0.01,0.01,0.01)
+  est1=Group_Detect(X,2,0.01,0.01,0.01)
   Omegahat1=est1$Omega
   ttt=unlist(est1$orderB)
   
   result_1=judge_label(as.matrix(mu0[ttt],ncol=1),as.matrix(mu1[ttt],ncol=1),pi0,pi1,test_data[ttt,],Omegahat1,true_lable)
   
-  Omegahat2=BCDnormal(X,ncol(X),0.01,0.01,0.01)$Omega
+  Omegahat2=Group_Precision(X,ncol(X),0.01,0.01,0.01)$Omega
   
   result_2=judge_label(mu0,mu1,pi0,pi1,test_data,Omegahat2,true_lable)
   
@@ -366,6 +394,14 @@ MDDA=function(x1){
 
 
 result1=foreach(i=1:100,.combine='rbind') %dopar% MDDA(i)
+colnames(result1)=c("OUR_Sp","OUR_Se","OUR_MCC",
+                    "NO-GROUP_Sp","NO-GROUP_Se","NO-GROUP_MCC",
+                    "G-LASSO_Sp","G-LASSO_Se","G-LASSO_MCC",
+                    "TIGER_Sp","TIGER_Se","TIGER_MCC",
+                    "CLIME_Sp","CLIME_Se","CLIME_MCC",
+                    "POET_Sp","POET_Se","POET_MCC")
+result1=rbind(result1,apply(result1,2,mean))
+result1=rbind(result1,apply(result1,2,sd))
 write.csv(result1,"real_data_result.csv")
 
 stopCluster(cl)
