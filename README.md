@@ -29,22 +29,22 @@ This folder contains the six demos to run the simulation examples introduced in 
 This folder contains the codes to reproduce the full simulation results presented in Section 4 and Appendix B in the paper. As the full simulation results invovles multiple competing methods, various settings, and 200 replications, the codes utilized  parallel computing in order to reduce the running time. We would recommend to reproduce the full simulation results with a computing system of at least 24 cores and 500GB of storage. The following list provides the guidance for each file in the folder.
 
 1. Table1.R will generate the result for the Table 1.
-2. Table2.R will generate the result for the Table 2. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-3. Model 1.R will generate the result for the Table 3. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-4. Model 2.R will generate the result for the Table 4. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-5. Model 3.R will generate the result for the Table 5. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-6. Model 4.R will generate the result for the Table 6. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-7. Model 5.R will generate the result for the Table 7. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
-8. Model 6.R will generate the result for the Table 1 in the Appendix B. The codes will generate the error for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate error mean and std.
+2. Table2.R will generate the result for the Table 2. 
+3. Model 1.R will generate the result for the Table 3. 
+4. Model 2.R will generate the result for the Table 4. 
+5. Model 3.R will generate the result for the Table 5. 
+6. Model 4.R will generate the result for the Table 6. 
+7. Model 5.R will generate the result for the Table 7. 
+8. Model 6.R will generate the result for the Table 1 in the Appendix B. 
 
 
 ### results  
 
 This folder contains the results from running the code in the simulation-full folder and real-data-code folder. 
 
-1. For "ModelX_a_b.csv" file, it records the errors for model X when n=a and p=b.
-2. For "table2_a_b.csv" file, it records the errors for table 2 when n=a and p=b.
-3. For "real_data_result.csv" file, it records the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for real data codes.
+1. For "ModelX_a_b.csv" file, it records the errors for model X when n=a and p=b. The last two rows are mean and std.
+2. For "table2_a_b.csv" file, it records the errors for table 2 when n=a and p=b. The last two rows are mean and std.
+3. For "real_data_result.csv" file, it records the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for real data codes. The last two rows are mean and std.
 
 
 ### data
@@ -62,7 +62,7 @@ This folder contains the real dataset dataset for the real data analysis. The da
 
 This folder contrains the codes to reproduce the real data analysis results presented in Section 5 in the paper. 
 1. plots.R will generate two plots. 1.png is Figure 1 in the paper. 2.png is Figure 2 in the paper.
-2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method in each time simulation. Please use ```apply(x,2,mean)``` and ```apply(x,2,sd)``` to calculate mean and std.
+2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method in each time simulation. 
 
 ### figures  
 
