@@ -43,8 +43,8 @@ This folder contains the dataset for the real data analysis. The dataset is publ
 
 "old.zip" in the folder contians the original data files downloaded from the above link. In this zip file, there are two excel documents named "MDA133CompleteInfo20070319.xls" and "MDA133PredictorTrainAndValidation.xls". We create the two data files used in the real data anlaysis as follows:
 
-    1.  We used the column "pCR" in "MDA133CompleteInfo20070319.xls" as our label which is the "label.csv". "label.csv" contians the true class labels.
-    2.  We deleted the header and genes name in "MDA133PredictorTrainAndValidation.xls" and built "data_breast.csv". "data_breast.csv" contains the breast cancel data we used in real data analysis.
+1.  We used the column "pCR" in "MDA133CompleteInfo20070319.xls" as our label which is the "label.csv". "label.csv" contians the true class labels.
+2.  We deleted the header and genes name in "MDA133PredictorTrainAndValidation.xls" and built "data_breast.csv". "data_breast.csv" contains the breast cancel data we used in real data analysis.
 
 
 ### real-data-code  
