@@ -37,32 +37,30 @@ This folder contains the codes to reproduce the full simulation results presente
 7. Model 5.R will generate the result for the Table 7. 
 8. Model 6.R will generate the result for the Table 1 in the Appendix B. 
 
-
-### results  
-
-This folder contains the results from running the code in the simulation-full folder and real-data-code folder. 
-
-1. For "ModelX_a_b.csv" file, it records the errors for model X when n=a and p=b. The last two rows are mean and std.
-2. For "table2_a_b.csv" file, it records the errors for table 2 when n=a and p=b. The last two rows are mean and std.
-3. For "real_data_result.csv" file, it records the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for real data codes. The last two rows are mean and std.
-
-
 ### data
 
-This folder contains the real dataset dataset for the real data analysis. The dataset is publicly avaliable at  https://bioinformatics.mdanderson.org/public-datasets/ . Please download the data file named "MDA133: Clinical Data and dChip MBEI value Files" from this link. We have modified the dataset for data analysis.
+This folder contains the dataset for the real data analysis. The dataset is publicly avaliable at  https://bioinformatics.mdanderson.org/public-datasets/ . Please download the data file named "MDA133: Clinical Data and dChip MBEI value Files" from this link. 
 
-1. "label.csv" is the true label.
-2. "data_breast.csv" is the dataset.
-3. old.zip is the original format of the above two documents. In this file, there are two excel documents named "MDA133CompleteInfo20070319.xls" and "MDA133PredictorTrainAndValidation.xls". Here is how we modified these two datasets:
-    *  We used the column "pCR" in "MDA133CompleteInfo20070319.xls" as our label which is the "label.csv".
-    *  We deleted the header and genes name in "MDA133PredictorTrainAndValidation.xls" and built our "data_breast.csv".
+"old.zip" in the folder contians the original data files downloaded from the above link. In this zip file, there are two excel documents named "MDA133CompleteInfo20070319.xls" and "MDA133PredictorTrainAndValidation.xls". We create the two data files used in the real data anlaysis as follows:
+    *  We used the column "pCR" in "MDA133CompleteInfo20070319.xls" as our label which is the "label.csv". "label.csv" contians the true class labels.
+    *  We deleted the header and genes name in "MDA133PredictorTrainAndValidation.xls" and built "data_breast.csv". "data_breast.csv" contains the breast cancel data we used in real data analysis.
 
 
 ### real-data-code  
 
 This folder contrains the codes to reproduce the real data analysis results presented in Section 5 in the paper. 
 1. plots.R will generate two plots. 1.png is Figure 1 in the paper. 2.png is Figure 2 in the paper.
-2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method in each time simulation. 
+2. real_data.R will generate the analysis results presented in Table 8. The codes will generate the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for each method over 100 stratified
+samples.
+
+
+### results  
+
+This folder contains the results from running the code in the simulation-full folder and real-data-code folder. 
+
+1. For a file named like "ModelX_a_b.csv" file, it records the errors for model X when n=a and p=b. The last two rows are column mean and column std.
+2. For a file named like "table2_a_b.csv" file, it records the errors for table 2 when n=a and p=b. The last two rows are column mean and column std.
+3. For "real_data_result.csv" file, it records the Specificity, Sensitivity, and Matthews Correlation Coefficien (MCC) for real data codes. The last two rows are column mean and column std.
 
 ### figures  
 
