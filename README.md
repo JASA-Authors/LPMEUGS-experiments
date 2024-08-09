@@ -24,7 +24,7 @@ The codes in this repository requires R version 4.3.1 and the following R packag
 
 This folder contains the six demos to run the simulation examples introduced in Section 4 and Appendix B in the paper. By default, each demo will run every setting of that model for one replication for illustration purpose. The user can change the value of ```replication_time``` to specify the desired number of replications. The expected running time for each demo on a regular desktop PC should be within 5 minutes. 
 
-### simulation-full  
+### simulation-code 
 
 This folder contains the codes to reproduce the full simulation results presented in Section 4 and Appendix B in the paper. As the full simulation results invovles multiple competing methods, various settings, and 200 replications for each setting, the codes utilized  parallel computing in order to reduce the running time. We would recommend to reproduce the full simulation results with a computing system of at least 24 cores and 500GB of storage. The following list provides the guidance for each file in the folder.
 
