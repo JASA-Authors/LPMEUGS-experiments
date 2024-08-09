@@ -7,6 +7,7 @@ library(POET)
 library(foreach)
 library(doParallel)
 
+# Specify the number of cores to be used for parallel computing.
 clnum<-24
 cl <- makeCluster(getOption("cl.cores", clnum))
 registerDoParallel(cl)
@@ -630,6 +631,7 @@ compare_par=function(i, Sigmatrue, n, p){
   result_error
 }
 
+# The environment and setup of the computer cluster may have an impact on the random number generating process of R.
 x <- foreach(i=1:200,.combine='rbind') %dopar% compare_par(i, Sigmatrue4, n, p)
 colnames(x)=c("OUR","ORACLE","NO-GROUP","G-LASSO","TIGER","CLIME","POET")
 x=rbind(x,apply(x,2,mean))
