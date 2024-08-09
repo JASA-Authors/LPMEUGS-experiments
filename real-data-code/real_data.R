@@ -5,6 +5,8 @@ library(flare) # CLIME, TIGER
 library(POET)
 library(foreach)
 library(doParallel)
+
+# Specify the number of cores to be used for parallel computing.
 clnum<-24
 cl <- makeCluster(getOption("cl.cores", clnum))
 registerDoParallel(cl)
@@ -392,7 +394,7 @@ MDDA=function(x1){
 }
 
 
-
+# The environment and setup of the computer cluster may have an impact on the random number generating process of R.
 result1=foreach(i=1:100,.combine='rbind') %dopar% MDDA(i)
 colnames(result1)=c("OUR_Sp","OUR_Se","OUR_MCC",
                     "NO-GROUP_Sp","NO-GROUP_Se","NO-GROUP_MCC",
