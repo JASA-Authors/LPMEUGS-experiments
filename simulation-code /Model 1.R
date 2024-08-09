@@ -7,7 +7,7 @@ library(POET)
 library(foreach)
 library(doParallel)
 
-# Specify the number of cores to be used for parallel computing
+# Specify the number of cores to be used for parallel computing.
 clnum<-24
 cl <- makeCluster(getOption("cl.cores", clnum))
 registerDoParallel(cl)
