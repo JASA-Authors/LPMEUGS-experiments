@@ -15,7 +15,7 @@ Source_Table8=function(repli=5,verbose=T,save_result=T){
   ## default is True.
   ##
   ## Output:
-  ## result: result table for the selected model
+  ## result: result table
   
   ################
   ### Function ###
