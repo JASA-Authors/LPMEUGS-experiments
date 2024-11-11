@@ -18,7 +18,7 @@ Source_Table2=function(repli=5,n=200,p=160,verbose=T,save_result=T){
   ## default is True.
   ##
   ## Output:
-  ## result: result table for the selected model
+  ## result: result table
   
   
   ################
