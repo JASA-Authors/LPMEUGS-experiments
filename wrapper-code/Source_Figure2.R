@@ -11,11 +11,11 @@ require(reshape2)
 
 Source_Figure2=function(save_result=T){
   ## Input:
-  ## save_result: whether to save result FIgure to be a png file
+  ## save_result: whether to save result Figure to be a png file
   ## default is True.
   ##
   ## Output:
-  ## Figure 1 in the paper
+  ## Figure 2 in the paper
   
   ################
   ### Function ###
