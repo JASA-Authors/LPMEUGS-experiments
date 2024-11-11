@@ -10,7 +10,7 @@ require(patchwork)
 
 Source_Figure1=function(save_result=T){
   ## Input:
-  ## save_result: whether to save result FIgure to be a png file
+  ## save_result: whether to save result Figure to be a png file
   ## default is True.
   ##
   ## Output:
