@@ -43,6 +43,7 @@ if(run_table1==TRUE){
   ## Function: Source_Table1(Method,repli=400,verbose=T,save_result=T)
   ## Input:
   ## Method: Model1, Model2, Model3, Model4, Model5
+  ## Definition of models is from Section 4.1
   ## repli: simulation replication times
   ## verbose: whether to print the result table for the selected model
   ## default is True.
