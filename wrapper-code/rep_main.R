@@ -3,6 +3,7 @@ library(doParallel)
 set.seed(1234)
 
 ### Indicators for running specific tables or figures
+### Change the indicator to FALSE to skip an experiment.
 run_table1=TRUE
 run_table2=TRUE
 run_table3=TRUE
@@ -15,7 +16,8 @@ run_figure2=TRUE
 run_table8=TRUE
 
 
-### simulation replication times
+### Number of simulation replications for each experiment
+### The default numbers allow the user to replicate all the results on a personal computer within a managable time
 repli_table1=400
 repli_table2=2
 repli_table3=2
